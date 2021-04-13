@@ -1,9 +1,9 @@
 ﻿using OpenQA.Selenium.Appium;
 
-namespace OpenITDemo.Tests.Pages
+namespace OpenITDemo.Mobile.Pages
 {
-	public abstract class BaseMobilePage<TPage> 
-		where TPage : BaseMobilePage<TPage>
+	public abstract class BaseMobilePage<TMobileAppPage>
+		where TMobileAppPage : BaseMobilePage<TMobileAppPage>
 	{
 		protected AppiumDriver<AppiumWebElement> Driver { get; }
 
@@ -11,5 +11,7 @@ namespace OpenITDemo.Tests.Pages
 		{
 			Driver = driver;
 		}
+
+		public abstract TMobileAppPage WaitForPageLoad();
 	}
 }
