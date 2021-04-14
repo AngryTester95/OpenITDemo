@@ -51,7 +51,7 @@ namespace OpenITDemo.Mobile.Pages
 		{
 			Driver
 				.Wait(Timeouts.Wait)
-				.Until(driver => TweetButton.Displayed);
+				.Until(driver => TweetButton.Displayed && Menu.Displayed);
 
 			return this;
 		}

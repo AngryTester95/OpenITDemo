@@ -40,4 +40,10 @@
     <ProjectReference Include="..\OpenITDemo.Web\OpenITDemo.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="twitter.apk">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

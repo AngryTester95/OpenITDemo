@@ -1,53 +1,96 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
+using NUnit.Framework;
 using OpenITDemo.Domain;
 using OpenITDemo.Mobile.Pages;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
-using OpenQA.Selenium.Appium.Service;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
 
 namespace OpenITDemo.Tests
 {
 	[TestFixture]
 	public class MobileTwitterFixture
 	{
-		private AndroidDriver<AppiumWebElement> driver;
+		private const string appId = "com.twitter.android";
 
-		private AppiumLocalService localService;
+		private readonly Uri hub = new Uri("http://127.0.0.1:4723/wd/hub");
+
+		private readonly User user = new User { Login = new Login("demo_open"), Password = "zaq123ZAQ!@#" };
+
+		private AndroidDriver<AppiumWebElement> driver;
 
 		[SetUp]
 		public void Initialize()
 		{
 			var options = new AppiumOptions();
-			options.AddAdditionalCapability(MobileCapabilityType.DeviceName, "HUAWEI P30 lite");
-			options.AddAdditionalCapability(MobileCapabilityType.PlatformName, "Android");
-			options.AddAdditionalCapability(MobileCapabilityType.PlatformVersion, "10");
-			//options.AddAdditionalCapability(MobileCapabilityType.BrowserName, "chrome");
-			options.AddAdditionalCapability(MobileCapabilityType.App, @"C:\Users\yanus\OneDrive\Desktop\twitter.apk");
-			options.AddAdditionalCapability("appPackage", "com.twitter.android");
-			options.AddAdditionalCapability("appActivity", "com.twitter.android.StartActivity");
-			driver = new AndroidDriver<AppiumWebElement>(new Uri($"http://127.0.0.1:4723/wd/hub"), options);
+
+			AddDevice(options);
+			AddTwitter(options);
+
+			driver = new AndroidDriver<AppiumWebElement>(hub, options);
+			driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 		}
 
 		[Test]
-		public void M()
+		public void UserShouldBeLoggedOn()
 		{
 			var page = new TwitterLogInMobileAppPage(driver);
-			page.LogIn(new User { Login = new Login("demo_open"), Password = "zaq123ZAQ!@#" });
-			new TwitterAccountMobileAppPage(driver).Tweet(new Tweet { Message = "Hello, Aleh!!!" });
-			var t = new TwitterAccountMobileAppPage(driver).MyTweets;
+			page.LogIn(user);
 
-			var me = new TwitterAccountMobileAppPage(driver).Me;
+			var actualLoggedOnUser = new TwitterAccountMobileAppPage(driver)
+				.WaitForPageLoad()
+				.Me;
+
+			actualLoggedOnUser.Should().BeEquivalentTo(user.Login);
+		}
+
+		[Test]
+		public void TweetShouldBeCreated()
+		{
+			var tweet = new Tweet { Message = $"Hello, World{new Random().Next(100_000)}!" };
+
+			var page = new TwitterLogInMobileAppPage(driver);
+			page.LogIn(user);
+
+			var accountPage = new TwitterAccountMobileAppPage(driver)
+				.WaitForPageLoad();
+
+			accountPage.Tweet(tweet);
+			//need to refresh app page;
+
+			accountPage.WaitForPageLoad().MyTweets
+				.Should().Contain(tweet);
 		}
 
 		[TearDown]
 		public void TearDown()
 		{
 			driver?.CloseApp();
-			localService?.Dispose();
+
+			if (driver.IsAppInstalled(appId))
+			{
+				driver.RemoveApp(appId);
+			}
+		}
+
+		private static AppiumOptions AddDevice(AppiumOptions options)
+		{
+			options.AddAdditionalCapability(MobileCapabilityType.DeviceName, "HUAWEI P30 lite");
+			options.AddAdditionalCapability(MobileCapabilityType.PlatformName, "Android");
+			options.AddAdditionalCapability(MobileCapabilityType.PlatformVersion, "10");
+
+			return options;
+		}
+
+		private static AppiumOptions AddTwitter(AppiumOptions options)
+		{
+			options.AddAdditionalCapability(MobileCapabilityType.App, Path.Combine(Directory.GetCurrentDirectory(), "twitter.apk"));
+			options.AddAdditionalCapability("appPackage", "com.twitter.android");
+			options.AddAdditionalCapability("appActivity", "com.twitter.android.StartActivity");
+
+			return options;
 		}
 	}
 }
