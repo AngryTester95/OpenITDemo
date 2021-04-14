@@ -9,9 +9,9 @@ namespace OpenITDemo.Mobile.Extensions
 		{
 			var touch = new TouchAction(driver);
 
-			touch.Press(500, 500)
+			touch.Press(500, 1000)
 				.Wait(500)
-				.MoveTo(500, 100)
+				.MoveTo(500, 1500)
 				.Release()
 				.Perform();
 		}

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using OpenITDemo.Domain;
+using OpenITDemo.Mobile.Extensions;
 using OpenITDemo.Mobile.Pages;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
@@ -58,7 +59,7 @@ namespace OpenITDemo.Tests
 				.WaitForPageLoad();
 
 			accountPage.Tweet(tweet);
-			//need to refresh app page;
+			driver.PullDown();
 
 			accountPage.WaitForPageLoad().MyTweets
 				.Should().Contain(tweet);
