@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
+using NUnit.Framework;
+using OpenITDemo.Desktop.Pages;
 using OpenITDemo.Domain;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
@@ -17,39 +19,63 @@ namespace OpenITDemo.Tests
     [TestFixture]
     public class DesktopTwitterFixture
     {
-        private readonly User user = new User { Login = new Login("demo_open"), Password = "zaq123ZAQ!@#" };
+        private WindowsDriver<WindowsElement> driver;
 
-        [Test]
-        public void Start()
+        [SetUp]
+        public void BeforeTest()
         {
             var ops = new AppiumOptions();
             ops.AddAdditionalCapability("app", "Root");
-            var desktop = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), ops);
+            driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), ops);
 
-            desktop.Keyboard.PressKey(Keys.Command + "s" + Keys.Command);
+            driver.Keyboard.PressKey(Keys.Command + "s" + Keys.Command);
             Thread.Sleep(1000);
-            desktop.Keyboard.PressKey("Twitter");
+            driver.Keyboard.PressKey("Twitter");
             Thread.Sleep(1000);
-            desktop.Keyboard.PressKey(Keys.Enter);
+            driver.Keyboard.PressKey(Keys.Enter);
             Thread.Sleep(1000);
-            desktop.Keyboard.PressKey(Keys.Escape);
+            driver.Keyboard.PressKey(Keys.Escape);
 
-            var twitterWindow = desktop.FindElementByName("Twitter");
+            var twitterWindow = driver.FindElementByName("Twitter");
             var twitterHandle = int.Parse(twitterWindow.GetAttribute("NativeWindowHandle")).ToString("x");
             ops = new AppiumOptions();
             ops.AddAdditionalCapability("appTopLevelWindow", twitterHandle);
-            var twitter = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), ops);
+            driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), ops);
+            //System.Xml.Linq.XDocument.Parse(driver.PageSource).Save("test3.xml", System.Xml.Linq.SaveOptions.None);
+        }
 
-            var els = twitter.FindElementsByName("Phone, email, or username");
-            els[1].Click();
-            els[1].SendKeys(user.Login.Value);
+        [Test]
+        public void UserShouldBeLoggedOn()
+        {
+            var page = new TwitterLoginDesktopPage(driver);
+            page.LogIn(Users.OpenITDemoUser);
 
-            els = twitter.FindElementsByName("Password");
-            els[1].Click();
-            els[1].SendKeys(user.Password);
+            var actualLoggedOnUser = new TwitterAccountDesktopPage(driver)
+                .WaitForPageLoad()
+                .Me;
 
-            els = twitter.FindElementsByName("Log in");
-            els[1].Click();
+            actualLoggedOnUser.Should().BeEquivalentTo(Users.OpenITDemoUser.Login);
+        }
+
+        [Test]
+        public void TweetShouldBeCreated()
+        {
+            var tweet = new Tweet { Message = $"Hello, World{new Random().Next(100_000)}!" };
+
+            var page = new TwitterLoginDesktopPage(driver);
+            page.LogIn(Users.OpenITDemoUser);
+
+            var accountPage = new TwitterAccountDesktopPage(driver)
+                .WaitForPageLoad();
+
+            accountPage.Tweet(tweet);
+            accountPage.WaitForPageLoad().MyTweets.Should().Contain(tweet);
+        }
+
+        [TearDown]
+        public void AfterTest()
+        {
+            driver?.CloseApp();
         }
     }
 }

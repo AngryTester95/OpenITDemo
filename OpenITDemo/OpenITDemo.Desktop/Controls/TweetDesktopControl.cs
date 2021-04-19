@@ -10,11 +10,17 @@ namespace OpenITDemo.Desktop.Controls
 {
 	public class TweetDesktopControl : BaseDesktopControl
 	{
-		public Tweet Extract() => throw new NotImplementedException();
+		public Tweet Tweet { get; private set; }
 
 		public TweetDesktopControl(WindowsElement element)
 			: base(element)
 		{
+			var tweetTextElement = element.FindElementByXPath("/Group/Group/Group/Group/Text");
+
+			Tweet = new Tweet
+			{
+				Message = tweetTextElement.Text,
+			};
 		}
 	}
 }
