@@ -18,8 +18,6 @@ namespace OpenITDemo.Tests
 
 		private readonly Uri hub = new Uri("http://127.0.0.1:4723/wd/hub");
 
-		private readonly User user = new User { Login = new Login("demo_open"), Password = "zaq123ZAQ!@#" };
-
 		private AndroidDriver<AppiumWebElement> driver;
 
 		[SetUp]
@@ -38,13 +36,13 @@ namespace OpenITDemo.Tests
 		public void UserShouldBeLoggedOn()
 		{
 			var page = new TwitterLogInMobileAppPage(driver);
-			page.LogIn(user);
+			page.LogIn(Users.OpenITDemoUser);
 
 			var actualLoggedOnUser = new TwitterAccountMobileAppPage(driver)
 				.WaitForPageLoad()
 				.Me;
 
-			actualLoggedOnUser.Should().BeEquivalentTo(user.Login);
+			actualLoggedOnUser.Should().BeEquivalentTo(Users.OpenITDemoUser.Login);
 		}
 
 		[Test]
@@ -53,7 +51,7 @@ namespace OpenITDemo.Tests
 			var tweet = new Tweet { Message = $"Hello, World{new Random().Next(100_000)}!" };
 
 			var page = new TwitterLogInMobileAppPage(driver);
-			page.LogIn(user);
+			page.LogIn(Users.OpenITDemoUser);
 
 			var accountPage = new TwitterAccountMobileAppPage(driver)
 				.WaitForPageLoad();
