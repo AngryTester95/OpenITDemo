@@ -8,7 +8,7 @@ Scenario: Log In
 	Then Account page is loaded
 	And I logged in with OpenITDemoUser user
 
-Scenario: Log In
+Scenario: Tweet
 	Given Open Twitter with Desktop
 	Then Login page is loaded
 	When I do Log In with OpenITDemoUser user
