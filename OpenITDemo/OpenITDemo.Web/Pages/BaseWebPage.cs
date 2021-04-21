@@ -1,8 +1,9 @@
-﻿using OpenQA.Selenium;
+﻿using OpenITDemo.Domain;
+using OpenQA.Selenium;
 
 namespace OpenITDemo.Web
 {
-	public abstract class BaseWebPage<TWebPage>
+	public abstract class BaseWebPage<TWebPage> : IBasePage
 		where TWebPage : BaseWebPage<TWebPage>
 	{
 		protected IWebDriver Driver { get; }
@@ -13,5 +14,10 @@ namespace OpenITDemo.Web
 		}
 
 		public abstract TWebPage WaitForPageLoad();
+
+		IBasePage IBasePage.WaitForPageLoad()
+		{
+			return WaitForPageLoad();
+		}
 	}
 }

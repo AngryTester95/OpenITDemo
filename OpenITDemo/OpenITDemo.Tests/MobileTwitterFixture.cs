@@ -76,9 +76,10 @@ namespace OpenITDemo.Tests
 
 		private static AppiumOptions AddDevice(AppiumOptions options)
 		{
-			options.AddAdditionalCapability(MobileCapabilityType.DeviceName, "HUAWEI P30 lite");
+			options.AddAdditionalCapability(MobileCapabilityType.DeviceName, "Pixel 3A 29");
 			options.AddAdditionalCapability(MobileCapabilityType.PlatformName, "Android");
 			options.AddAdditionalCapability(MobileCapabilityType.PlatformVersion, "10");
+			options.AddAdditionalCapability(MobileCapabilityType.Udid, "emulator-5556");
 
 			return options;
 		}

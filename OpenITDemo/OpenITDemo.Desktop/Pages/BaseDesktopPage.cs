@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.Appium.Windows;
+﻿using OpenITDemo.Domain;
+using OpenQA.Selenium.Appium.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenITDemo.Desktop.Pages
 {
-    public abstract class BaseDesktopPage<TDesktopAppPage>
+    public abstract class BaseDesktopPage<TDesktopAppPage> : IBasePage
         where TDesktopAppPage : BaseDesktopPage<TDesktopAppPage>
     {
         protected WindowsDriver<WindowsElement> Driver;
@@ -17,5 +18,10 @@ namespace OpenITDemo.Desktop.Pages
             Driver = driver;
         }
         public abstract TDesktopAppPage WaitForPageLoad();
+
+        IBasePage IBasePage.WaitForPageLoad()
+        {
+            return WaitForPageLoad();
+        }
     }
 }

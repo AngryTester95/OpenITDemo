@@ -2,7 +2,7 @@
 
 namespace OpenITDemo.Domain
 {
-	public interface ITwitterAccountPage
+	public interface ITwitterAccountPage : IBasePage
 	{
 		Login Me { get; }
 
