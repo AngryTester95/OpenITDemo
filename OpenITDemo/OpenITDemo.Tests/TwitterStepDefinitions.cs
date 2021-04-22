@@ -1,88 +1,115 @@
 ﻿using FluentAssertions;
 using OpenITDemo.Domain;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using TechTalk.SpecFlow;
 
 namespace OpenITDemo.Tests
 {
-    [Binding]
-    public sealed class TwitterStepDefinitions
-    {
-        private readonly ScenarioContext _context;
+	[Binding]
+	public sealed class TwitterStepDefinitions
+	{
+		private static readonly string _pattern = @"{rand:(\d+)}";
 
-        private ITwitterLoginPage LoginPage;
-        private ITwitterAccountPage AccountPage;
+		private readonly ScenarioContext _context;
 
-        private Dictionary<string, IBasePage> Pages;
+		private IWebDriver driver;
 
-        public TwitterStepDefinitions(ScenarioContext context)
-        {
-            _context = context;
+		private ITwitterLoginPage loginPage;
 
-            Pages = new Dictionary<string, IBasePage>
-            {
-                { "Login", LoginPage },
-                { "Account", AccountPage },
-            };
-        }
+		private ITwitterAccountPage accountPage;
 
-        [Given(@"Open Twitter with (.*)")]
-        public void GivenOpenTwitterWith(Device device)
-        {
-            // TODO: switch driver creation and pages initialization
-        }
+		private  readonly Dictionary<string, IBasePage> pages;
 
-        [When(@"I do Log In with (.*) user")]
-        public void WhenIDoLogInWith(string userAlias)
-        {
-            LoginPage.LogIn(Users.Get(userAlias));
-        }
+		public TwitterStepDefinitions(ScenarioContext context)
+		{
+			_context = context;
 
-        [Then(@"(.*) page is loaded")]
-        public void ThenPageIsLoaded(string pageName)
-        {
-            Pages[pageName].WaitForPageLoad();
-        }
+			pages = new Dictionary<string, IBasePage>();
+		}
 
-        [Then(@"I logged in with (.*) user")]
-        public void ThenILoggedInWith(string userAlias)
-        {
-            AccountPage.Me.Should().BeEquivalentTo(Users.Get(userAlias).Login);
-        }
+		[Given(@"Open Twitter with (.*)")]
+		public void GivenOpenTwitterWith(Device device)
+		{
+			var pageFactory = ResolvePageFactory(device);
 
-        [When(@"I tweet (.*)")]
-        public void WhenITweetHelloOpenITRand(string tweetText)
-        {
-            // TODO: add parsing tweetText with replace of rand:5 with 5 random chars
-            var tweet = new Tweet
-            {
-                Message = tweetText,
-            };
-            _context.Add("tweet", tweet);
-            AccountPage.Tweet(tweet);
-        }
+			driver = pageFactory.Driver;
+			pages["Login"] = loginPage = pageFactory.GetTwitterLoginPage();
+			pages["Account"] = accountPage = pageFactory.GetTwitterAccountPage();
+		}
 
-        [Then(@"My tweet is posted")]
-        public void ThenMyTweetIsPosted()
-        {
-            var tweet = _context.Get<Tweet>("tweet");
+		[When(@"I do Log In with (.*) user")]
+		public void WhenIDoLogInWith(string userAlias)
+		{
+			loginPage.LogIn(Users.Get(userAlias));
+		}
 
-            //TODO: step for waiting or refactor to add waiting
+		[Then(@"(.*) page is loaded")]
+		public void ThenPageIsLoaded(string pageName)
+		{
+			pages[pageName].WaitForPageLoad();
+		}
 
-            AccountPage.MyTweets
-                .Should().Contain(tweet);
-        }
+		[Then(@"I logged in with (.*) user")]
+		public void ThenILoggedInWith(string userAlias)
+		{
+			accountPage.Me.Should().BeEquivalentTo(Users.Get(userAlias).Login);
+		}
 
+		[When(@"I tweet (.*)")]
+		public void WhenITweetHelloOpenITRand(string tweetText)
+		{
+			var tweet = new Tweet
+			{
+				Message = TransformTweetText(tweetText),
+			};
+			_context.Add("tweet", tweet);
+			accountPage.Tweet(tweet);
+		}
 
-        public enum Device
-        {
-            Browser,
-            Android,
-            Desktop
-        }
-    }
+		[Then(@"My tweet is posted")]
+		public void ThenMyTweetIsPosted()
+		{
+			var tweet = _context.Get<Tweet>("tweet");
+
+			accountPage.WaitForPageLoad();
+
+			accountPage.MyTweets
+				.Should().Contain(tweet);
+		}
+
+		[AfterScenario]
+		public void AfterScenario()
+		{
+			driver?.Quit();
+		}
+
+		private static BaseTwitterPageFactory ResolvePageFactory(Device device)
+		{
+			return device switch
+			{
+				Device.Android => new TwitterMobilePageFactory(DriverFactory.GetMobileDriver()),
+				Device.Desktop => new TwitterDesktopPageFactory(DriverFactory.GetDesktopDriver()),
+				Device.Browser => new TwitterWebPageFactory(DriverFactory.GetWebDriver()),
+				_ => throw new NotSupportedException($"unknown '{device}' device.")
+			};
+		}
+
+		private static string TransformTweetText(string tweetText)
+		{
+			var match = Regex.Match(tweetText, _pattern);
+			var count = int.Parse(match.Groups[1].Value);
+
+			return Regex.Replace(tweetText, _pattern, Generator.Get(count));
+		}
+
+		public enum Device
+		{
+			Browser,
+			Android,
+			Desktop
+		}
+	}
 }

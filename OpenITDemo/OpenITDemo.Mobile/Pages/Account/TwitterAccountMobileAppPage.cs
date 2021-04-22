@@ -31,7 +31,14 @@ namespace OpenITDemo.Mobile.Pages
 			}
 		}
 
-		public List<Tweet> MyTweets => TweetControls.Select(control => control.Extract()).ToList();
+		public List<Tweet> MyTweets
+		{
+			get
+			{
+				Driver.PullDown();
+				return TweetControls.Select(control => control.Extract()).ToList();
+			}
+		}
 
 		public TwitterAccountMobileAppPage(AppiumDriver<AppiumWebElement> driver)
 			: base(driver)

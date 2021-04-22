@@ -75,10 +75,14 @@ namespace OpenITDemo.Tests
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Log In")]
-        public virtual void LogIn()
+        [NUnit.Framework.TestCaseAttribute("Browser", null)]
+        [NUnit.Framework.TestCaseAttribute("Desktop", null)]
+        [NUnit.Framework.TestCaseAttribute("Android", null)]
+        public virtual void LogIn(string device, string[] exampleTags)
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("Device", device);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Log In", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 4
 this.ScenarioInitialize(scenarioInfo);
@@ -101,7 +105,7 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 5
- testRunner.Given("Open Twitter with Desktop", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given(string.Format("Open Twitter with {0}", device), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 6
  testRunner.Then("Login page is loaded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -121,12 +125,16 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Tweet")]
-        public virtual void Tweet()
+        [NUnit.Framework.TestCaseAttribute("Browser", null)]
+        [NUnit.Framework.TestCaseAttribute("Desktop", null)]
+        [NUnit.Framework.TestCaseAttribute("Android", null)]
+        public virtual void Tweet(string device, string[] exampleTags)
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("Device", device);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Tweet", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 11
+#line 17
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -146,22 +154,22 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 12
- testRunner.Given("Open Twitter with Desktop", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 18
+ testRunner.Given(string.Format("Open Twitter with {0}", device), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 13
+#line 19
  testRunner.Then("Login page is loaded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 14
+#line 20
  testRunner.When("I do Log In with OpenITDemoUser user", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 15
+#line 21
  testRunner.Then("Account page is loaded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 16
+#line 22
  testRunner.When("I tweet Hello OpenIT!!! {rand:5}", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 17
+#line 23
  testRunner.Then("My tweet is posted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
