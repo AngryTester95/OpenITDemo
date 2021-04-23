@@ -14,8 +14,8 @@ namespace OpenITDemo.Tests
 
 		public static User OpenITDemoUser { get; } = new User
 		{ 
-			Login = new Login("demo_open"),
-			Password = "zaq123ZAQ!@#",
+			Login = new Login("{user-login}"),
+			Password = "{user-password}",
 		};
 	}
 }
