@@ -26,14 +26,14 @@ namespace OpenITDemo.Tests
 		{
 			var ops = new AppiumOptions();
 			ops.AddAdditionalCapability("app", "Root");
-			var driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), ops);
+			var driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4724"), ops);
 
 			driver.Keyboard.PressKey(Keys.Command + "s" + Keys.Command);
-			Thread.Sleep(1000);
+			Thread.Sleep(2000);
 			driver.Keyboard.PressKey("Twitter");
-			Thread.Sleep(1000);
+			Thread.Sleep(2000);
 			driver.Keyboard.PressKey(Keys.Enter);
-			Thread.Sleep(1000);
+			Thread.Sleep(2000);
 			driver.Keyboard.PressKey(Keys.Escape);
 
 			var twitterWindow = driver.FindElementByName("Twitter");
@@ -41,7 +41,7 @@ namespace OpenITDemo.Tests
 			ops = new AppiumOptions();
 			ops.AddAdditionalCapability("appTopLevelWindow", twitterHandle);
 
-			return new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), ops);
+			return new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4724"), ops);
 		}
 
 		public static AndroidDriver<AppiumWebElement> GetMobileDriver()
@@ -60,7 +60,7 @@ namespace OpenITDemo.Tests
 			options.AddAdditionalCapability(MobileCapabilityType.DeviceName, "Pixel 3A 29");
 			options.AddAdditionalCapability(MobileCapabilityType.PlatformName, "Android");
 			options.AddAdditionalCapability(MobileCapabilityType.PlatformVersion, "10");
-			options.AddAdditionalCapability(MobileCapabilityType.Udid, "emulator-5556");
+			options.AddAdditionalCapability(MobileCapabilityType.Udid, "emulator-5554");
 
 			return options;
 		}

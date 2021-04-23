@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenITDemo.Desktop.Pages
@@ -60,6 +61,8 @@ namespace OpenITDemo.Desktop.Pages
                 .Until(driver => TweetButton.Enabled);
 
             TweetButton.Click();
+
+            Thread.Sleep(2000);
 
             Driver.Wait(Timeouts.Wait)
                 .Until(driver => TweetButton.Displayed && !TweetButton.Enabled);

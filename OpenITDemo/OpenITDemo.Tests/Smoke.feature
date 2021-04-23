@@ -19,7 +19,7 @@ Scenario Outline: Tweet
 	Then Login page is loaded
 	When I do Log In with OpenITDemoUser user
 	Then Account page is loaded
-	When I tweet Hello OpenIT!!! {rand:5}
+	When I tweet Hello OpenIT from {device}!!! {rand:5}
 	Then My tweet is posted
 
 	Examples:

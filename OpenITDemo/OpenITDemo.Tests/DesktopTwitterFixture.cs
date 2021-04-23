@@ -26,7 +26,7 @@ namespace OpenITDemo.Tests
         {
             var ops = new AppiumOptions();
             ops.AddAdditionalCapability("app", "Root");
-            driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), ops);
+            driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4724"), ops);
 
             driver.Keyboard.PressKey(Keys.Command + "s" + Keys.Command);
             Thread.Sleep(1000);
@@ -40,7 +40,7 @@ namespace OpenITDemo.Tests
             var twitterHandle = int.Parse(twitterWindow.GetAttribute("NativeWindowHandle")).ToString("x");
             ops = new AppiumOptions();
             ops.AddAdditionalCapability("appTopLevelWindow", twitterHandle);
-            driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), ops);
+            driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4724"), ops);
             //System.Xml.Linq.XDocument.Parse(driver.PageSource).Save("test3.xml", System.Xml.Linq.SaveOptions.None);
         }
 

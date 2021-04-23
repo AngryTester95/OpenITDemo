@@ -167,7 +167,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.Then("Account page is loaded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 22
- testRunner.When("I tweet Hello OpenIT!!! {rand:5}", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I tweet Hello OpenIT from {device}!!! {rand:5}", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 23
  testRunner.Then("My tweet is posted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
