@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <NoWarn>CS0618</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Appium.WebDriver" Version="4.3.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="89.0.4389.2300" />
+    <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="90.0.4430.2400" />
+    <PackageReference Include="Selenium.WebDriver.GeckoDriver" Version="0.29.1" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.7.141" />
 
     
@@ -28,9 +32,20 @@
 
   <ItemGroup>
     <Folder Include="Drivers\" />
-    <Folder Include="Features\" />
     <Folder Include="Hooks\" />
     <Folder Include="Steps\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenITDemo.Desktop\OpenITDemo.Desktop.csproj" />
+    <ProjectReference Include="..\OpenITDemo.Mobile\OpenITDemo.Mobile.csproj" />
+    <ProjectReference Include="..\OpenITDemo.Web\OpenITDemo.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="twitter.apk">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
